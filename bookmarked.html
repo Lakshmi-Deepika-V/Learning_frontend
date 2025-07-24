@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bookmarked Courses</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #ecf0f1;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"], select {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .course {
+      background-color: white;
+      padding: 1.2rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .course:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .course strong {
+      font-size: 18px;
+      color: #2c3e50;
+    }
+
+    .course em {
+      color: #555;
+      display: block;
+      margin: 4px 0;
+    }
+
+    .course span {
+      font-size: 13px;
+      color: #fff;
+      background-color: #3498db;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    .course a {
+      text-decoration: none;
+      color: #2c3e50;
+      font-weight: bold;
+    }
+
+    .course a:hover {
+      text-decoration: underline;
+      color: #2980b9;
+    }
+
+    .empty {
+      font-size: 18px;
+      color: #888;
+      text-align: center;
+      margin-top: 3rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>★ Bookmarked Courses</h1>
+</header>
+
+<div class="container">
+  <div class="filters">
+    <input type="text" id="searchBox" placeholder="Search bookmarked courses...">
+    <select id="categoryFilter">
+      <option value="all">All Categories</option>
+      <option value="web">Web Development</option>
+      <option value="data">Data Science</option>
+      <option value="design">Design</option>
+    </select>
+  </div>
+
+  <div id="bookmarks"></div>
+</div>
+
+<script>
+  const searchBox = document.getElementById("searchBox");
+  const categoryFilter = document.getElementById("categoryFilter");
+  const container = document.getElementById("bookmarks");
+
+  async function loadBookmarkedCourses() {
+    const username = localStorage.getItem("loggedInUser");
+    if (!username) {
+      container.innerHTML = "<p class='empty'>You must be logged in to view bookmarks.</p>";
+      return;
+    }
+
+    const keyword = searchBox.value.toLowerCase();
+    const selected = categoryFilter.value;
+
+    try {
+      const res1 = await fetch('https://learningbackend-production-5516.up.railway.app/api/courses');
+      const allCourses = await res1.json();
+
+      const res2 = await fetch(`https://learningbackend-production-5516.up.railway.app/api/bookmarks/${username}`);
+      const userBookmarks = await res2.json(); // array of course IDs
+
+      const filtered = allCourses.filter(course =>
+        userBookmarks.includes(course.id) &&
+        course.title.toLowerCase().includes(keyword) &&
+        (selected === "all" || course.category === selected)
+      );
+
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.innerHTML = "<p class='empty'>No matching bookmarked courses found.</p>";
+      } else {
+        filtered.forEach(course => {
+          container.innerHTML += `
+            <div class="course">
+              <strong><a href="course.html?id=${course.id}" target="_blank">${course.title}</a></strong>
+              <em>By ${course.instructor}</em>
+              <span>${course.category.toUpperCase()}</span>
+            </div>
+          `;
+        });
+      }
+    } catch (error) {
+      container.innerHTML = "<p class='empty' style='color:red;'>Failed to load bookmarks.</p>";
+      console.error(error);
+    }
+  }
+
+  searchBox.addEventListener("input", loadBookmarkedCourses);
+  categoryFilter.addEventListener("change", loadBookmarkedCourses);
+
+  loadBookmarkedCourses();
+</script>
+
+</body>
+</html>

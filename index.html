@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome to CourseHub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #27ae60);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .intro {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .intro h2 {
+      font-size: 36px;
+      margin-bottom: 1rem;
+    }
+
+    .intro p {
+      font-size: 18px;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn-group button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: white;
+      color: #2c3e50;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-group button:hover {
+      background-color: #ddd;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    #popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      color: black;
+    }
+
+    .popup-content input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .popup-content button {
+      padding: 8px 12px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .error-msg {
+      color: red;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .info-section {
+      background-color: rgba(255,255,255,0.1);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .info-section h2 {
+      color: #fff;
+      font-size: 28px;
+      margin-bottom: 1rem;
+    }
+
+    .info-section p {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .contact-section {
+      background-color: rgba(255,255,255,0.05);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .contact-section h2 {
+      color: #fff;
+      font-size: 28px;
+      margin-bottom: 1rem;
+    }
+
+    .contact-section p {
+      font-size: 16px;
+      margin: 0.5rem 0;
+    }
+
+    .contact-section a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CourseHub</h1>
+</header>
+
+<div class="intro">
+  <h2>Welcome to CourseHub</h2>
+  <p>Explore free and premium online courses in Web Development, Data Science, Design, and more. Join now and start learning with top instructors.</p>
+  <div class="btn-group">
+    <button onclick="openPopup('login')">Login</button>
+    <button onclick="openPopup('register')">Register</button>
+  </div>
+</div>
+
+<!-- Popup Forms -->
+<div id="popup">
+  <div class="popup-content">
+    <form id="loginForm" onsubmit="return handleLogin(event)">
+      <h3>Login</h3>
+      <input type="text" id="loginUsername" placeholder="Username or Email" required />
+      <div id="loginUserError" class="error-msg"></div>
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <div id="loginPassError" class="error-msg"></div>
+      <div style="text-align: right;">
+        <button type="submit">Login</button>
+        <button type="button" onclick="closePopup()">Cancel</button>
+      </div>
+    </form>
+
+    <form id="registerForm" style="display:none;" onsubmit="return handleRegister(event)">
+      <h3>Register</h3>
+      <input type="text" id="regUsername" placeholder="Username" required />
+      <div id="regUsernameError" class="error-msg"></div>
+      <input type="email" id="regEmail" placeholder="Email" required />
+      <div id="regEmailError" class="error-msg"></div>
+      <input type="password" id="regPassword" placeholder="Password" required />
+      <div id="regPassError" class="error-msg"></div>
+      <input type="password" id="regConfirm" placeholder="Confirm Password" required />
+      <div id="regConfirmError" class="error-msg"></div>
+      <div style="text-align: right;">
+        <button type="submit">Register</button>
+        <button type="button" onclick="closePopup()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- About Section -->
+<div class="info-section">
+  <h2>About CourseHub</h2>
+  <p>
+    CourseHub is a leading online learning platform offering curated courses in technology, business, and design. We aim to empower learners globally with flexible and accessible education. Whether you're upskilling for a career switch or diving into a new hobby, CourseHub is your companion on the journey of lifelong learning.
+  </p>
+</div>
+
+<!-- Contact Section -->
+<div class="contact-section">
+  <h2>Contact Us</h2>
+  <p>📧 Email: <a href="mailto:support@coursehub.com">support@coursehub.com</a></p>
+  <p>🌐 Website: <a href="https://www.coursehub.com" target="_blank">www.coursehub.com</a></p>
+  <p>📍 Address: 123 Learning Lane, Knowledge City, IN - 625014</p>
+</div>
+
+<footer>© 2025 CourseHub. All rights reserved.</footer>
+
+<script>
+  function openPopup(type) {
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("loginForm").style.display = type === "login" ? "block" : "none";
+    document.getElementById("registerForm").style.display = type === "register" ? "block" : "none";
+    clearFormErrors();
+  }
+
+  function closePopup() {
+    document.getElementById("popup").style.display = "none";
+    clearFormErrors();
+    document.getElementById("loginForm").reset();
+    document.getElementById("registerForm").reset();
+  }
+
+  function clearFormErrors() {
+    document.querySelectorAll('.error-msg').forEach(el => el.innerText = '');
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    clearFormErrors();
+
+    if (!username) {
+      document.getElementById("loginUserError").innerText = "Username or Email is required.";
+      return;
+    }
+    if (password.length < 6) {
+      document.getElementById("loginPassError").innerText = "Password must be at least 6 characters.";
+      return;
+    }
+
+    try {
+      const res = await fetch("https://learningbackend-production-5516.up.railway.app/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      localStorage.setItem("loggedInUser", username);
+      alert("✅ " + data.message);
+      window.location.href = "home.html";
+    } catch (err) {
+      alert("❌ " + err.message);
+    }
+  }
+
+  async function handleRegister(event) {
+    event.preventDefault();
+    const username = document.getElementById("regUsername").value.trim();
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPassword").value;
+    const confirm = document.getElementById("regConfirm").value;
+    clearFormErrors();
+
+    if (!username) {
+      document.getElementById("regUsernameError").innerText = "Username is required.";
+      return;
+    }
+    if (!email.includes("@") || !email.includes(".")) {
+      document.getElementById("regEmailError").innerText = "Enter a valid email.";
+      return;
+    }
+    if (password.length < 6) {
+      document.getElementById("regPassError").innerText = "Password must be at least 6 characters.";
+      return;
+    }
+    if (password !== confirm) {
+      document.getElementById("regConfirmError").innerText = "Passwords do not match.";
+      return;
+    }
+
+    try {
+      const res = await fetch("https://learningbackend-production-5516.up.railway.app/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      alert("✅ " + data.message);
+      closePopup();
+    } catch (err) {
+      alert("❌ " + err.message);
+    }
+  }
+</script>
+
+</body>
+</html>
